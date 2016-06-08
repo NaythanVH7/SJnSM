@@ -118,7 +118,10 @@ var music = new Howl(
 	buffer: true,
 	volume: 0.1
 } );
+<<<<<<< HEAD
+=======
 //music.play();
+>>>>>>> origin/master
 
 var sfx = new Howl(
 {
@@ -128,19 +131,6 @@ var sfx = new Howl(
 	loop: false
 } );
 
-
-		//adds colours to the platforms that the player will collide with.
-/*function DrawLevelCollisionData(tileLayer) {
-    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
-        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
-            if (cells[tileLayer][y][x] == 1) {
-                context.fillStyle = "#F00";
-                context.fillRect(TILE * x, TILE * y, TILE, TILE);
-            }
-        }
-    }
-}*/
-
 var cells =[];
 
 function initialize()
@@ -149,12 +139,12 @@ function initialize()
 	{
 		cells[layerIdx] = [];
 		var idx = 0;
-		for(var y = 0; y < level1.layers[layerIdx].height; y++)
+		for(var y = 0; y < level2.layers[layerIdx].height; y++)
 		{
 			cells[layerIdx][y] = [];
-			for(var x = 0; x < level1.layers[layerIdx].width; x++)
+			for(var x = 0; x < level2.layers[layerIdx].width; x++)
 			{
-				if(level1.layers[layerIdx].data[idx] !=0)
+				if(level2.layers[layerIdx].data[idx] !=0)
 				{
 					/*
 						for each tile we find in the layer data, we need to create 4 collisions
@@ -173,33 +163,17 @@ function initialize()
 				idx++;
 			}
 		}
-			//adding enemies
-		idx = 0;
-		for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
-		{
-			for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++)
-			{
-				if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] !=0)
-				{
-					var px = tileToPixel(x);
-					var py = tileToPixel(y);
-					var e = new Enemy(px, py);
-					enemies.push(e);
-				}
-				idx++;
-			}
-		}
 	}
 
 	//initialize trigger layer in collision map.
 	cells[LAYER_OBJECT_TRIGGERS] = [];
 	idx = 0;
-	for(var y = 0; y < level1.layers[LAYER_OBJECT_TRIGGERS].height; y++)
+	for(var y = 0; y < level2.layers[LAYER_OBJECT_TRIGGERS].height; y++)
 	{
 		cells[LAYER_OBJECT_TRIGGERS][y] = [];
-		for(var x = 0; x < level1.layers[LAYER_OBJECT_TRIGGERS].width; x++)
+		for(var x = 0; x < level2.layers[LAYER_OBJECT_TRIGGERS].width; x++)
 		{
-			if(level1.layers[LAYER_OBJECT_TRIGGERS].data[idx] != 0)
+			if(level2.layers[LAYER_OBJECT_TRIGGERS].data[idx] != 0)
 			{
 				cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
 				cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
@@ -214,6 +188,21 @@ function initialize()
 		}
 	}
 }
+	idx = 0;
+	for(var y = 0; y < level2.layers[LAYER_OBJECT_ENEMIES].height; y++)
+		{
+			for(var x = 0; x < level2.layers[LAYER_OBJECT_ENEMIES].width; x++)
+			{
+				if(level2.layers[LAYER_OBJECT_ENEMIES].data[idx] !=0)
+				{
+					var px = tileToPixel(x);
+					var py = tileToPixel(y);
+					var e = new Enemy(px, py);
+					enemies.push(e);
+				}
+				idx++;
+			}
+		}
 
 function cellAtPixelCoord(layer, x, y)
 {
@@ -232,7 +221,7 @@ function cellAtTileCoord(layer, tx, ty)
 		return 1;
 	//let the player fall past the bottom of the screen
 	//if so, player dies.
-	if(ty>=MAP.th)
+	if(ty>=MAP.th || ty < 0)
 		return 0;
 	return cells[layer][ty][tx];
 };
@@ -261,6 +250,8 @@ function drawMap()
 	var startX = -1;
 	var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2;
 	var tileX = pixelToTile(player.position.x);
+
+console.log(player.position.x);
 	var offsetX = TILE + Math.floor(player.position.x%TILE);
 
 	startX = tileX - Math.floor(maxTiles / 2);
@@ -277,17 +268,15 @@ function drawMap()
 	}
 
 	worldOffsetX = startX * TILE + offsetX;
-	console.log(offsetX);
-
 
 	for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
 	{
-		for(var y=0; y<level1.layers[layerIdx].height; y++)
+		for(var y=0; y<level2.layers[layerIdx].height; y++)
 		{
-			var idx = y * level1.layers[layerIdx].width + startX;
+			var idx = y * level2.layers[layerIdx].width + startX;
 			for(var x = startX; x < startX + maxTiles; x++)
 			{
-				if(level1.layers[layerIdx].data[idx] !=0)
+				if(level2.layers[layerIdx].data[idx] !=0)
 				{
 					/*
 						the tiles in the Tiled map are base 1
@@ -295,7 +284,7 @@ function drawMap()
 						so subtract one from the tileset if
 						to get the correct tile
 					*/
-					var tileIndex = level1.layers[layerIdx].data[idx] - 1;
+					var tileIndex = level2.layers[layerIdx].data[idx] - 1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) *
 					(TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
@@ -379,8 +368,8 @@ function runGame(deltaTime)
 
 	if(player.position.y > SCREEN_HEIGHT)
 	{
-		player.position.x = SCREEN_WIDTH / 2;
-		player.position.y = SCREEN_HEIGHT / 2;
+		player.position.x = 2 * TILE;
+		player.position.y = 5 * TILE;
 		lives = lives -1;
 	}
 
@@ -399,12 +388,12 @@ function runGame(deltaTime)
 		{
 			cells[LAYER_OBJECT_ENEMIES] = [];
 			idx = 0;
-			for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
+			for(var y = 0; y < level2.layers[LAYER_OBJECT_ENEMIES].height; y++)
 			{
 				cells[LAYER_OBJECT_ENEMIES][y] = [];
-				for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++)
+				for(var x = 0; x < level2.layers[LAYER_OBJECT_ENEMIES].width; x++)
 				{
-					if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
+					if(level2.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
 					{
 						cells[LAYER_OBJECT_ENEMIES][y][x] = 1;
 						cells[LAYER_OBJECT_ENEMIES][y-1][x] = 1;
@@ -419,6 +408,8 @@ function runGame(deltaTime)
 				}
 			}
 		}
+
+		enemies[i].draw();
 	}
 
 	time -= deltaTime;
@@ -445,7 +436,7 @@ function runGameOver(deltaTime)
 	context.fillStyle = "#FFFFFF";
 	context.fillText("Your Score: " +score, 230, 280);
 
-	sfx.mute();
+	sfx.stop();
 }
 
 function runWinGame(deltaTime)
@@ -469,6 +460,8 @@ function runWinGame(deltaTime)
 	context.fillText("You Win!", 460, 350);
 	context.fillStyle = "green";
 	context.fillText("You Win!", 580, 230);
+
+	sfx.stop();
 }
 
 function run()

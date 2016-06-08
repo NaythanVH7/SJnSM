@@ -42,7 +42,7 @@ var Player = function()
 
 	//this.image = document.createElement("img");
 	this.position = new Vector2();
-	this.position.set( 9*TILE, 0*TILE );
+	this.position.set( 2*TILE, 5*TILE );
 
 	this.width = 159;
 	this.height = 163;
@@ -167,7 +167,6 @@ Player.prototype.update = function(deltaTime)
 	ty = pixelToTile(this.position.y);
 	nx = (this.position.x)%TILE; //true is player overlaps right
 	ny = (this.position.y)%TILE; //true is player overlaps below
-	console.log(player.position.x, player.position.y);
 	cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
 	cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
 	celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);

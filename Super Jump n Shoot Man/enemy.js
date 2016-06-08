@@ -1,11 +1,14 @@
+var scorpion = document.createElement("img");
+scorpion.src = "scorpion.png";
+
 var Enemy = function(x, y)
 {
-	this.sprite = new Sprite("bat.png");
-	this.sprite.buildAnimation(2, 1, 88, 94, 0.3, [0,1]);
-	this.sprite.setAnimationOffset(0, -35, -40);
+	//this.sprite = new Sprite("bat.png");
+	//this.sprite.buildAnimation(2, 1, 88, 94, 0.3, [0,1]);
+	//this.sprite.setAnimationOffset(0, -35, -40);
 
 	this.position = new Vector2();
-	this.position.set(x, y);
+	this.position.set(35*TILE, 4.3*TILE);
 
 	this.velocity = new Vector2();
 
@@ -15,7 +18,7 @@ var Enemy = function(x, y)
 
 Enemy.prototype.update = function(deltaTime)
 {
-	this.sprite.update(deltaTime);
+	//this.sprite.update(deltaTime);
 
 	if(this.pause > 0)
 	{
@@ -38,7 +41,7 @@ Enemy.prototype.update = function(deltaTime)
 		{
 			if(celldiag && !cellright)
 			{
-				ddx = ddx + ENEMY_ACCEL; 		//enemy wants to go right
+				ddx = ddx + 350; 		//enemy wants to go right
 			}
 			else
 			{
@@ -52,7 +55,7 @@ Enemy.prototype.update = function(deltaTime)
 		{
 			if(celldown && !cell)
 			{
-				ddx = ddx - ENEMY_ACCEL; 		//enemy wants to go left
+				ddx = ddx - 350; 		//enemy wants to go left
 			}
 			else
 			{
@@ -66,5 +69,11 @@ Enemy.prototype.update = function(deltaTime)
 		this.velocity.x = bound(this.velocity.x + (deltaTime * ddx), 
 													-ENEMY_MAXDX, ENEMY_MAXDX)
 	}
+}
+
+Enemy.prototype.draw = function()
+{
+	//var screenX = this.position.x - worldOffsetX;
+	context.drawImage(scorpion, this.position.x - worldOffsetX, this.position.y);
 }
 
